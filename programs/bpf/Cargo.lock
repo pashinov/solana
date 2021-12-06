@@ -1608,23 +1608,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "hidapi"
-version = "1.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e6c4cc7279df8353788ac551186920e44959d5948aec404be02b28544a598bce"
-dependencies = [
- "cc",
- "libc",
- "pkg-config",
-]
-
-[[package]]
-name = "histogram"
-version = "0.6.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "12cb882ccb290b8646e554b157ab0b71e64e8d5bef775cd66b6531e52d302669"
-
-[[package]]
 name = "hmac"
 version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5103,7 +5086,6 @@ dependencies = [
  "base32",
  "console",
  "dialoguer",
- "hidapi",
  "log 0.4.14",
  "num-derive",
  "num-traits",
