@@ -31,8 +31,16 @@ use {
     clap::{crate_description, crate_name, crate_version, ArgEnum, Args, Parser},
     log::*,
     rand::{thread_rng, Rng},
+<<<<<<< HEAD
     serde::{Deserialize, Serialize},
     solana_client::rpc_client::RpcClient,
+=======
+    solana_bench_tps::{bench::generate_and_fund_keypairs, bench_tps_client::BenchTpsClient},
+    solana_client::{
+        connection_cache::{ConnectionCache, DEFAULT_TPU_CONNECTION_POOL_SIZE},
+        rpc_client::RpcClient,
+    },
+>>>>>>> 29b597cea (Connection pool support in connection cache and QUIC connection reliability improvement (#25793))
     solana_core::serve_repair::RepairProtocol,
     solana_gossip::{contact_info::ContactInfo, gossip_service::discover},
     solana_sdk::{
@@ -460,8 +468,29 @@ fn main() {
             );
             exit(1);
         });
+<<<<<<< HEAD
         nodes = gossip_nodes;
     }
+=======
+
+        let connection_cache = Arc::new(ConnectionCache::new(
+            cmd_params.tpu_use_quic,
+            DEFAULT_TPU_CONNECTION_POOL_SIZE,
+        ));
+        let (client, num_clients) =
+            get_multi_client(&validators, &SocketAddrSpace::Unspecified, connection_cache);
+        if validators.len() < num_clients {
+            eprintln!(
+                "Error: Insufficient nodes discovered.  Expecting {} or more",
+                validators.len()
+            );
+            exit(1);
+        }
+        (gossip_nodes, Some(Arc::new(client)))
+    } else {
+        (vec![], None)
+    };
+>>>>>>> 29b597cea (Connection pool support in connection cache and QUIC connection reliability improvement (#25793))
 
     info!("done found {} nodes", nodes.len());
     let payer = cmd_params

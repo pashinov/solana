@@ -5,6 +5,10 @@ use {
     crate::{
         client_error::ClientErrorKind,
         connection_cache::ConnectionCacheStats,
+<<<<<<< HEAD
+=======
+        nonblocking::quic_client::{QuicClient, QuicLazyInitializedEndpoint},
+>>>>>>> 29b597cea (Connection pool support in connection cache and QUIC connection reliability improvement (#25793))
         tpu_connection::{ClientStats, TpuConnection},
     },
     async_mutex::Mutex,
@@ -12,6 +16,7 @@ use {
     itertools::Itertools,
     lazy_static::lazy_static,
     log::*,
+<<<<<<< HEAD
     quinn::{
         ClientConfig, Endpoint, EndpointConfig, IdleTimeout, NewConnection, VarInt, WriteError,
     },
@@ -28,6 +33,10 @@ use {
         sync::{atomic::Ordering, Arc},
         time::Duration,
     },
+=======
+    solana_sdk::transport::Result as TransportResult,
+    std::{net::SocketAddr, sync::Arc},
+>>>>>>> 29b597cea (Connection pool support in connection cache and QUIC connection reliability improvement (#25793))
     tokio::runtime::Runtime,
 };
 
@@ -162,9 +171,12 @@ impl QuicTpuConnection {
         self.client.stats.clone()
     }
 
-    pub fn new(tpu_addr: SocketAddr, connection_stats: Arc<ConnectionCacheStats>) -> Self {
-        let tpu_addr = SocketAddr::new(tpu_addr.ip(), tpu_addr.port() + QUIC_PORT_OFFSET);
-        let client = Arc::new(QuicClient::new(tpu_addr));
+    pub fn new(
+        endpoint: Arc<QuicLazyInitializedEndpoint>,
+        tpu_addr: SocketAddr,
+        connection_stats: Arc<ConnectionCacheStats>,
+    ) -> Self {
+        let client = Arc::new(QuicClient::new(endpoint, tpu_addr));
 
         Self {
             client,
@@ -205,7 +217,11 @@ impl TpuConnection for QuicTpuConnection {
             let send_buffer =
                 client.send_buffer(wire_transaction, &stats, connection_stats.clone());
             if let Err(e) = send_buffer.await {
-                warn!("Failed to send transaction async to {:?}", e);
+                warn!(
+                    "Failed to send transaction async to {}, error: {:?} ",
+                    client.tpu_addr(),
+                    e
+                );
                 datapoint_warn!("send-wire-async", ("failure", 1, i64),);
                 connection_stats.add_client_stats(&stats, 1, false);
             } else {

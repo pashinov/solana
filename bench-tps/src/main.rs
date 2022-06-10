@@ -47,6 +47,7 @@ fn main() {
         target_node,
         external_client_type,
         use_quic,
+        tpu_connection_pool_size,
         ..
     } = &cli_config;
 
@@ -100,9 +101,18 @@ fn main() {
             do_bench_tps(client, cli_config, keypairs);
         }
         ExternalClientType::ThinClient => {
+<<<<<<< HEAD
             let nodes = discover_cluster(entrypoint_addr, *num_nodes, SocketAddrSpace::Unspecified)
                 .unwrap_or_else(|err| {
                     eprintln!("Failed to discover {} nodes: {:?}", num_nodes, err);
+=======
+            let connection_cache =
+                Arc::new(ConnectionCache::new(*use_quic, *tpu_connection_pool_size));
+
+            let client = if let Ok(rpc_addr) = value_t!(matches, "rpc_addr", String) {
+                let rpc = rpc_addr.parse().unwrap_or_else(|e| {
+                    eprintln!("RPC address should parse as socketaddr {:?}", e);
+>>>>>>> 29b597cea (Connection pool support in connection cache and QUIC connection reliability improvement (#25793))
                     exit(1);
                 });
             let connection_cache = Arc::new(ConnectionCache::new(*use_quic));
@@ -156,7 +166,9 @@ fn main() {
                 json_rpc_url.to_string(),
                 CommitmentConfig::confirmed(),
             ));
-            let connection_cache = Arc::new(ConnectionCache::new(*use_quic));
+            let connection_cache =
+                Arc::new(ConnectionCache::new(*use_quic, *tpu_connection_pool_size));
+
             let client = Arc::new(
                 TpuClient::new_with_connection_cache(
                     rpc_client,
