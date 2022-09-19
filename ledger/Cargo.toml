@@ -48,7 +48,7 @@ solana-storage-proto = { path = "../storage-proto", version = "=1.9.29" }
 solana-vote-program = { path = "../programs/vote", version = "=1.9.29" }
 tempfile = "3.2.0"
 thiserror = "1.0"
-tokio = { version = "~1.14.1", features = ["full"] }
+tokio = { version = "1", features = ["full"] }
 tokio-stream = "0.1"
 trees = "0.4.2"
 reed-solomon-erasure = { version = "5.0.1", features = ["simd-accel"] }
