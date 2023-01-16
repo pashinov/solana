@@ -1099,6 +1099,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "curve25519-dalek"
+version = "4.0.0-pre.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "67bc65846be335cb20f4e52d49a437b773a2c1fdb42b19fc84e79e6f6771536f"
+dependencies = [
+ "cfg-if 1.0.0",
+ "fiat-crypto",
+ "packed_simd_2",
+ "platforms",
+ "serde",
+ "subtle",
+ "zeroize",
+]
+
+[[package]]
 name = "dashmap"
 version = "4.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1294,7 +1309,7 @@ version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c762bae6dcaf24c4c84667b8579785430908723d5c889f469d76a41d59cc7a9d"
 dependencies = [
- "curve25519-dalek",
+ "curve25519-dalek 3.2.1",
  "ed25519",
  "rand 0.7.3",
  "serde",
@@ -1487,6 +1502,12 @@ name = "feature-probe"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "835a3dc7d1ec9e75e2b5fb4ba75396837112d2060b03f7d43bc1897c7f7211da"
+
+[[package]]
+name = "fiat-crypto"
+version = "0.1.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a214f5bb88731d436478f3ae1f8a277b62124089ba9fb67f4f93fb100ef73c90"
 
 [[package]]
 name = "filedescriptor"
@@ -2405,6 +2426,12 @@ dependencies = [
 
 [[package]]
 name = "libm"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7fc7aa29613bd6a620df431842069224d8bc9011086b1db4c0e0cd47fa03ec9a"
+
+[[package]]
+name = "libm"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c7d73b3f436185384286bd8098d17ec07c9a7d2388a6599f824d8502b529702a"
@@ -3012,6 +3039,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "packed_simd_2"
+version = "0.3.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a1914cd452d8fccd6f9db48147b29fd4ae05bea9dc5d9ad578509f72415de282"
+dependencies = [
+ "cfg-if 1.0.0",
+ "libm 0.1.4",
+]
+
+[[package]]
 name = "parity-tokio-ipc"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3247,6 +3284,12 @@ name = "plain"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b4596b6d070b27117e987119b4dac604f3c58cfb0b191112e24771b2faeac1a6"
+
+[[package]]
+name = "platforms"
+version = "3.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e3d7ddaed09e0eb771a79ab0fd64609ba0afb0a8366421957936ad14cbd13630"
 
 [[package]]
 name = "polyval"
@@ -3807,7 +3850,7 @@ checksum = "7263373d500d4d4f505d43a2a662d475a894aa94503a1ee28e9188b5f3960d4f"
 dependencies = [
  "cc",
  "libc",
- "libm",
+ "libm 0.2.1",
  "lru",
  "parking_lot 0.11.2",
  "smallvec",
@@ -5661,7 +5704,7 @@ dependencies = [
  "bincode",
  "bv",
  "caps",
- "curve25519-dalek",
+ "curve25519-dalek 4.0.0-pre.5",
  "dlopen",
  "dlopen_derive",
  "fnv",
@@ -5736,7 +5779,7 @@ dependencies = [
  "cc",
  "console_error_panic_hook",
  "console_log",
- "curve25519-dalek",
+ "curve25519-dalek 3.2.1",
  "getrandom 0.2.3",
  "itertools",
  "js-sys",
@@ -5785,7 +5828,7 @@ dependencies = [
  "cc",
  "console_error_panic_hook",
  "console_log",
- "curve25519-dalek",
+ "curve25519-dalek 4.0.0-pre.5",
  "getrandom 0.2.3",
  "itertools",
  "js-sys",
@@ -6100,7 +6143,7 @@ dependencies = [
  "bytemuck",
  "byteorder",
  "chrono",
- "curve25519-dalek",
+ "curve25519-dalek 4.0.0-pre.5",
  "derivation-path",
  "digest 0.10.3",
  "ed25519-dalek",
@@ -6567,7 +6610,7 @@ dependencies = [
  "bytemuck",
  "byteorder",
  "cipher 0.4.3",
- "curve25519-dalek",
+ "curve25519-dalek 3.2.1",
  "getrandom 0.1.16",
  "itertools",
  "lazy_static",
@@ -6596,7 +6639,7 @@ dependencies = [
  "bytemuck",
  "byteorder",
  "cipher 0.4.3",
- "curve25519-dalek",
+ "curve25519-dalek 3.2.1",
  "getrandom 0.1.16",
  "itertools",
  "lazy_static",
