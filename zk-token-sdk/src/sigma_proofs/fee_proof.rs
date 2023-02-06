@@ -5,7 +5,7 @@
 #[cfg(not(target_os = "solana"))]
 use {
     crate::encryption::pedersen::{PedersenCommitment, PedersenOpening, G, H},
-    rand::rngs::OsRng,
+    rand_core::OsRng,
 };
 use {
     crate::{
@@ -316,7 +316,7 @@ impl FeeSigmaProof {
                 c_max_proof,
                 -c_max_proof * m,
                 -z_max,
-                Scalar::one(),
+                Scalar::ONE,
                 w * z_x,
                 w * z_delta_real,
                 -w * c_equality,
@@ -371,20 +371,23 @@ impl FeeSigmaProof {
         let (Y_max_proof, z_max_proof, c_max_proof, Y_delta, Y_claimed, z_x, z_delta, z_claimed) =
             array_refs![bytes, 32, 32, 32, 32, 32, 32, 32, 32];
 
-        let Y_max_proof = CompressedRistretto::from_slice(Y_max_proof);
-        let z_max_proof = Scalar::from_canonical_bytes(*z_max_proof)
-            .ok_or(ProofVerificationError::Deserialization)?;
-        let c_max_proof = Scalar::from_canonical_bytes(*c_max_proof)
-            .ok_or(ProofVerificationError::Deserialization)?;
+        let Y_max_proof = CompressedRistretto::from_slice(Y_max_proof)?;
+        let z_max_proof =
+            TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(*z_max_proof))?
+                .ok_or(ProofVerificationError::Deserialization)?;
+        let c_max_proof =
+            TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(*c_max_proof))?
+                .ok_or(ProofVerificationError::Deserialization)?;
 
-        let Y_delta = CompressedRistretto::from_slice(Y_delta);
-        let Y_claimed = CompressedRistretto::from_slice(Y_claimed);
-        let z_x =
-            Scalar::from_canonical_bytes(*z_x).ok_or(ProofVerificationError::Deserialization)?;
-        let z_delta = Scalar::from_canonical_bytes(*z_delta)
+        let Y_delta = CompressedRistretto::from_slice(Y_delta)?;
+        let Y_claimed = CompressedRistretto::from_slice(Y_claimed)?;
+        let z_x = TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(*z_x))?
             .ok_or(ProofVerificationError::Deserialization)?;
-        let z_claimed = Scalar::from_canonical_bytes(*z_claimed)
+        let z_delta = TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(*z_delta))?
             .ok_or(ProofVerificationError::Deserialization)?;
+        let z_claimed =
+            TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(*z_claimed))?
+                .ok_or(ProofVerificationError::Deserialization)?;
 
         Ok(Self {
             fee_max_proof: FeeMaxProof {

@@ -1,9 +1,9 @@
 use {
-    curve25519_dalek::{
+    curve25519_dalek::ristretto::RistrettoPoint,
+    sha3::{
         digest::{ExtendableOutput, Update, XofReader},
-        ristretto::RistrettoPoint,
+        Shake256, Shake256Reader,
     },
-    sha3::{Sha3XofReader, Shake256},
 };
 
 /// Generators for Pedersen vector commitments.
@@ -11,7 +11,7 @@ use {
 /// The code is copied from https://github.com/dalek-cryptography/bulletproofs for now...
 
 struct GeneratorsChain {
-    reader: Sha3XofReader,
+    reader: Shake256Reader,
 }
 
 impl GeneratorsChain {

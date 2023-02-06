@@ -20,7 +20,7 @@ use {
         errors::ProofVerificationError,
     },
     curve25519_dalek::traits::MultiscalarMul,
-    rand::rngs::OsRng,
+    rand_core::OsRng,
     zeroize::Zeroize,
 };
 use {
@@ -173,7 +173,7 @@ impl CtxtCommEqualityProof {
             vec![
                 &self.z_s,           // z_s
                 &(-&c),              // -c
-                &(-&Scalar::one()),  // -identity
+                &(-&Scalar::ONE),    // -identity
                 &(&w * &self.z_x),   // w * z_x
                 &(&w * &self.z_s),   // w * z_s
                 &(&w_negated * &c),  // -w * c
@@ -224,16 +224,16 @@ impl CtxtCommEqualityProof {
         let bytes = array_ref![bytes, 0, 192];
         let (Y_0, Y_1, Y_2, z_s, z_x, z_r) = array_refs![bytes, 32, 32, 32, 32, 32, 32];
 
-        let Y_0 = CompressedRistretto::from_slice(Y_0);
-        let Y_1 = CompressedRistretto::from_slice(Y_1);
-        let Y_2 = CompressedRistretto::from_slice(Y_2);
+        let Y_0 = CompressedRistretto::from_slice(Y_0)?;
+        let Y_1 = CompressedRistretto::from_slice(Y_1)?;
+        let Y_2 = CompressedRistretto::from_slice(Y_2)?;
 
-        let z_s =
-            Scalar::from_canonical_bytes(*z_s).ok_or(ProofVerificationError::Deserialization)?;
-        let z_x =
-            Scalar::from_canonical_bytes(*z_x).ok_or(ProofVerificationError::Deserialization)?;
-        let z_r =
-            Scalar::from_canonical_bytes(*z_r).ok_or(ProofVerificationError::Deserialization)?;
+        let z_s = TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(*z_s))?
+            .ok_or(ProofVerificationError::Deserialization)?;
+        let z_x = TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(*z_x))?
+            .ok_or(ProofVerificationError::Deserialization)?;
+        let z_r = TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(*z_r))?
+            .ok_or(ProofVerificationError::Deserialization)?;
 
         Ok(CtxtCommEqualityProof {
             Y_0,
@@ -404,7 +404,7 @@ impl CtxtCtxtEqualityProof {
             vec![
                 &self.z_s,            // z_s
                 &(-&c),               // -c
-                &(-&Scalar::one()),   // -identity
+                &(-&Scalar::ONE),     // -identity
                 &(&w * &self.z_x),    // w * z_x
                 &(&w * &self.z_s),    // w * z_s
                 &(&w_negated * &c),   // -w * c
@@ -462,17 +462,17 @@ impl CtxtCtxtEqualityProof {
         let bytes = array_ref![bytes, 0, 224];
         let (Y_0, Y_1, Y_2, Y_3, z_s, z_x, z_r) = array_refs![bytes, 32, 32, 32, 32, 32, 32, 32];
 
-        let Y_0 = CompressedRistretto::from_slice(Y_0);
-        let Y_1 = CompressedRistretto::from_slice(Y_1);
-        let Y_2 = CompressedRistretto::from_slice(Y_2);
-        let Y_3 = CompressedRistretto::from_slice(Y_3);
+        let Y_0 = CompressedRistretto::from_slice(Y_0)?;
+        let Y_1 = CompressedRistretto::from_slice(Y_1)?;
+        let Y_2 = CompressedRistretto::from_slice(Y_2)?;
+        let Y_3 = CompressedRistretto::from_slice(Y_3)?;
 
-        let z_s =
-            Scalar::from_canonical_bytes(*z_s).ok_or(ProofVerificationError::Deserialization)?;
-        let z_x =
-            Scalar::from_canonical_bytes(*z_x).ok_or(ProofVerificationError::Deserialization)?;
-        let z_r =
-            Scalar::from_canonical_bytes(*z_r).ok_or(ProofVerificationError::Deserialization)?;
+        let z_s = TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(*z_s))?
+            .ok_or(ProofVerificationError::Deserialization)?;
+        let z_x = TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(*z_x))?
+            .ok_or(ProofVerificationError::Deserialization)?;
+        let z_r = TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(*z_r))?
+            .ok_or(ProofVerificationError::Deserialization)?;
 
         Ok(CtxtCtxtEqualityProof {
             Y_0,

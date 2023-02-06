@@ -17,7 +17,7 @@ use {
         errors::ProofVerificationError,
     },
     curve25519_dalek::traits::MultiscalarMul,
-    rand::rngs::OsRng,
+    rand_core::OsRng,
     zeroize::Zeroize,
 };
 use {
@@ -134,7 +134,7 @@ impl ZeroBalanceProof {
             vec![
                 &self.z,            // z
                 &(-&c),             // -c
-                &(-&Scalar::one()), // -identity
+                &(-&Scalar::ONE),   // -identity
                 &(&w * &self.z),    // w * z
                 &(&w_negated * &c), // -w * c
                 &w_negated,         // -w
@@ -172,10 +172,11 @@ impl ZeroBalanceProof {
         let bytes = array_ref![bytes, 0, 96];
         let (Y_P, Y_D, z) = array_refs![bytes, 32, 32, 32];
 
-        let Y_P = CompressedRistretto::from_slice(Y_P);
-        let Y_D = CompressedRistretto::from_slice(Y_D);
+        let Y_P = CompressedRistretto::from_slice(Y_P)?;
+        let Y_D = CompressedRistretto::from_slice(Y_D)?;
 
-        let z = Scalar::from_canonical_bytes(*z).ok_or(ProofVerificationError::Deserialization)?;
+        let z = TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(*z))?
+            .ok_or(ProofVerificationError::Deserialization)?;
 
         Ok(ZeroBalanceProof { Y_P, Y_D, z })
     }

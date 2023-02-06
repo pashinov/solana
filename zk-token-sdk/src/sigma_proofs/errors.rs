@@ -4,27 +4,37 @@ use {
     thiserror::Error,
 };
 
-#[derive(Error, Clone, Debug, Eq, PartialEq)]
+#[derive(Error, Clone, Debug)]
 #[error("equality proof verification failed: {0}")]
 pub struct EqualityProofError(#[from] pub(crate) ProofVerificationError);
+impl_from_slice_error!(EqualityProofError);
 impl_from_transcript_error!(EqualityProofError);
+impl_from_infallible_error!(EqualityProofError);
 
-#[derive(Error, Clone, Debug, Eq, PartialEq)]
+#[derive(Error, Clone, Debug)]
 #[error("validity proof verification failed: {0}")]
 pub struct ValidityProofError(#[from] pub(crate) ProofVerificationError);
+impl_from_slice_error!(ValidityProofError);
 impl_from_transcript_error!(ValidityProofError);
+impl_from_infallible_error!(ValidityProofError);
 
-#[derive(Error, Clone, Debug, Eq, PartialEq)]
+#[derive(Error, Clone, Debug)]
 #[error("zero-balance proof verification failed: {0}")]
 pub struct ZeroBalanceProofError(#[from] pub(crate) ProofVerificationError);
+impl_from_slice_error!(ZeroBalanceProofError);
 impl_from_transcript_error!(ZeroBalanceProofError);
+impl_from_infallible_error!(ZeroBalanceProofError);
 
-#[derive(Error, Clone, Debug, Eq, PartialEq)]
+#[derive(Error, Clone, Debug)]
 #[error("fee sigma proof verification failed: {0}")]
 pub struct FeeSigmaProofError(#[from] pub(crate) ProofVerificationError);
+impl_from_slice_error!(FeeSigmaProofError);
 impl_from_transcript_error!(FeeSigmaProofError);
+impl_from_infallible_error!(FeeSigmaProofError);
 
-#[derive(Error, Clone, Debug, Eq, PartialEq)]
+#[derive(Error, Clone, Debug)]
 #[error("public key validity proof verification failed: {0}")]
 pub struct PubkeyValidityProofError(#[from] pub(crate) ProofVerificationError);
+impl_from_slice_error!(PubkeyValidityProofError);
 impl_from_transcript_error!(PubkeyValidityProofError);
+impl_from_infallible_error!(PubkeyValidityProofError);

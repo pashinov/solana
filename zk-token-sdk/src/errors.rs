@@ -4,7 +4,7 @@ use {
     thiserror::Error,
 };
 
-#[derive(Error, Clone, Debug, Eq, PartialEq)]
+#[derive(Error, Clone, Debug)]
 pub enum ProofError {
     #[error("invalid transfer amount range")]
     TransferAmount,
@@ -20,6 +20,8 @@ pub enum ProofError {
     PubkeyDeserialization,
     #[error("ciphertext does not exist in instruction data")]
     MissingCiphertext,
+    #[error(transparent)]
+    Infallible(#[from] std::convert::Infallible),
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -32,7 +34,7 @@ pub enum ProofType {
     RangeProof,
 }
 
-#[derive(Error, Clone, Debug, Eq, PartialEq)]
+#[derive(Error, Clone, Debug)]
 pub enum ProofVerificationError {
     #[error("required algebraic relation does not hold")]
     AlgebraicRelation,
@@ -50,6 +52,10 @@ pub enum ProofVerificationError {
     InvalidGeneratorsLength,
     #[error("number of blinding factors do not match the number of values")]
     WrongNumBlindingFactors,
+    #[error(transparent)]
+    Infallible(#[from] std::convert::Infallible),
+    #[error(transparent)]
+    TryFromSliceError(#[from] std::array::TryFromSliceError),
 }
 
 #[derive(Error, Clone, Debug, Eq, PartialEq)]
