@@ -84,3 +84,23 @@ macro_rules! impl_from_transcript_error {
         }
     };
 }
+
+macro_rules! impl_from_infallible_error {
+    ($sigma_error_type:ty) => {
+        impl From<std::convert::Infallible> for $sigma_error_type {
+            fn from(err: std::convert::Infallible) -> Self {
+                ProofVerificationError::Infallible(err).into()
+            }
+        }
+    };
+}
+
+macro_rules! impl_from_slice_error {
+    ($sigma_error_type:ty) => {
+        impl From<std::array::TryFromSliceError> for $sigma_error_type {
+            fn from(err: std::array::TryFromSliceError) -> Self {
+                ProofVerificationError::TryFromSliceError(err).into()
+            }
+        }
+    };
+}

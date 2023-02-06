@@ -1,7 +1,6 @@
 //! Pedersen commitment implementation using the Ristretto prime-order group.
 
 #[cfg(not(target_os = "solana"))]
-use rand::rngs::OsRng;
 use {
     core::ops::{Add, Mul, Sub},
     curve25519_dalek::{
@@ -10,6 +9,7 @@ use {
         scalar::Scalar,
         traits::MultiscalarMul,
     },
+    rand_core::OsRng,
     serde::{Deserialize, Serialize},
     sha3::Sha3_512,
     std::convert::TryInto,
@@ -88,7 +88,9 @@ impl PedersenOpening {
 
     pub fn from_bytes(bytes: &[u8]) -> Option<PedersenOpening> {
         match bytes.try_into() {
-            Ok(bytes) => Scalar::from_canonical_bytes(bytes).map(PedersenOpening),
+            Ok(bytes) => Scalar::from_canonical_bytes(bytes)
+                .map(PedersenOpening)
+                .into(),
             _ => None,
         }
     }
@@ -179,7 +181,7 @@ impl PedersenCommitment {
         }
 
         Some(PedersenCommitment(
-            CompressedRistretto::from_slice(bytes).decompress()?,
+            CompressedRistretto::from_slice(bytes).ok()?.decompress()?,
         ))
     }
 }

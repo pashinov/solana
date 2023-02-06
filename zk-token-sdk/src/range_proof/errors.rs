@@ -4,7 +4,8 @@ use {
     thiserror::Error,
 };
 
-#[derive(Error, Clone, Debug, Eq, PartialEq)]
+#[derive(Error, Clone, Debug)]
 #[error("range proof verification failed: {0}")]
 pub struct RangeProofError(#[from] pub(crate) ProofVerificationError);
 impl_from_transcript_error!(RangeProofError);
+impl_from_infallible_error!(RangeProofError);

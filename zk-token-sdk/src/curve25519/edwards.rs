@@ -63,7 +63,7 @@ mod target_arch {
         type Error = Curve25519Error;
 
         fn try_from(pod: &PodEdwardsPoint) -> Result<Self, Self::Error> {
-            CompressedEdwardsY::from_slice(&pod.0)
+            CompressedEdwardsY::from_slice(&pod.0)?
                 .decompress()
                 .ok_or(Curve25519Error::PodConversion)
         }
@@ -74,6 +74,7 @@ mod target_arch {
 
         fn validate_point(&self) -> bool {
             CompressedEdwardsY::from_slice(&self.0)
+                .expect("unexpected result")
                 .decompress()
                 .is_some()
         }

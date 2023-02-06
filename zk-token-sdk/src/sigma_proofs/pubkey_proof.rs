@@ -13,7 +13,7 @@ use {
         elgamal::{ElGamalKeypair, ElGamalPubkey},
         pedersen::H,
     },
-    rand::rngs::OsRng,
+    rand_core::OsRng,
     zeroize::Zeroize,
 };
 use {
@@ -63,7 +63,7 @@ impl PubkeySigmaProof {
         // extract the relevant scalar and Ristretto points from the input
         let s = elgamal_keypair.secret.get_scalar();
 
-        assert!(s != &Scalar::zero());
+        assert_ne!(s, &Scalar::ZERO);
         let s_inv = s.invert();
 
         // generate a random masking factor that also serves as a nonce
@@ -107,7 +107,7 @@ impl PubkeySigmaProof {
             .ok_or(ProofVerificationError::Deserialization)?;
 
         let check = RistrettoPoint::vartime_multiscalar_mul(
-            vec![&self.z, &(-&c), &(-&Scalar::one())],
+            vec![&self.z, &(-&c), &(-&Scalar::ONE)],
             vec![&(*H), P, &Y],
         );
 
@@ -133,8 +133,9 @@ impl PubkeySigmaProof {
         let bytes = array_ref![bytes, 0, 64];
         let (Y, z) = array_refs![bytes, 32, 32];
 
-        let Y = CompressedRistretto::from_slice(Y);
-        let z = Scalar::from_canonical_bytes(*z).ok_or(ProofVerificationError::Deserialization)?;
+        let Y = CompressedRistretto::from_slice(Y)?;
+        let z = TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(*z))?
+            .ok_or(ProofVerificationError::Deserialization)?;
 
         Ok(PubkeySigmaProof { Y, z })
     }

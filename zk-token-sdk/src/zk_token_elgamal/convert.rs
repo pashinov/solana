@@ -86,7 +86,8 @@ mod target_arch {
         type Error = ProofError;
 
         fn try_from(pod: PodScalar) -> Result<Self, Self::Error> {
-            Scalar::from_canonical_bytes(pod.0).ok_or(ProofError::CiphertextDeserialization)
+            TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(pod.0))?
+                .ok_or(ProofError::CiphertextDeserialization)
         }
     }
 

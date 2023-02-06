@@ -18,7 +18,7 @@ use {
         errors::ProofVerificationError,
     },
     curve25519_dalek::traits::MultiscalarMul,
-    rand::rngs::OsRng,
+    rand_core::OsRng,
     zeroize::Zeroize,
 };
 use {
@@ -165,7 +165,7 @@ impl ValidityProof {
                 &self.z_r,           // z_r
                 &self.z_x,           // z_x
                 &(-&c),              // -c
-                &-(&Scalar::one()),  // -identity
+                &-(&Scalar::ONE),    // -identity
                 &(&w * &self.z_r),   // w * z_r
                 &(&w_negated * &c),  // -w * c
                 &w_negated,          // -w
@@ -212,14 +212,14 @@ impl ValidityProof {
         let bytes = array_ref![bytes, 0, 160];
         let (Y_0, Y_1, Y_2, z_r, z_x) = array_refs![bytes, 32, 32, 32, 32, 32];
 
-        let Y_0 = CompressedRistretto::from_slice(Y_0);
-        let Y_1 = CompressedRistretto::from_slice(Y_1);
-        let Y_2 = CompressedRistretto::from_slice(Y_2);
+        let Y_0 = CompressedRistretto::from_slice(Y_0)?;
+        let Y_1 = CompressedRistretto::from_slice(Y_1)?;
+        let Y_2 = CompressedRistretto::from_slice(Y_2)?;
 
-        let z_r =
-            Scalar::from_canonical_bytes(*z_r).ok_or(ProofVerificationError::Deserialization)?;
-        let z_x =
-            Scalar::from_canonical_bytes(*z_x).ok_or(ProofVerificationError::Deserialization)?;
+        let z_r = TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(*z_r))?
+            .ok_or(ProofVerificationError::Deserialization)?;
+        let z_x = TryInto::<Option<Scalar>>::try_into(Scalar::from_canonical_bytes(*z_x))?
+            .ok_or(ProofVerificationError::Deserialization)?;
 
         Ok(ValidityProof {
             Y_0,
